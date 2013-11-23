@@ -48,6 +48,11 @@ For annotation processors that include the API and processor in one artifact, th
 [1]:http://square.github.io/dagger
 [2]:http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
 
+History & Credits
+---------------
+This plugin is based on a [script][6] that I've been using for some time which is the result of [this post on Google+][7] and [this post on StackOverflow.com][8].
+Variations of the SO post and my gists have been floating around for a while on the interwebs. That, and the fact that including scripts is a bit inconvenient pushed me to create this plugin.
+
 License
 -------
 This plugin is created by Hugo Visser and released in the [public domain][3]. Feel free to use and adapt as you like.
@@ -56,3 +61,6 @@ To get in touch, hit me up on [Twitter][4] or [Google Plus][5].
 [3]:http://unlicense.org/
 [4]:https://twitter.com/botteaap
 [5]:https://google.com/+hugovisser
+[6]:https://bitbucket.org/qbusict/android-gradle-scripts/src/686ce2301245ab1f0e6a32fb20b4d246ef742223/annotations.groovy?at=default
+[7]:https://plus.google.com/+HugoVisser/posts/VtGYV8RHwmo
+[8]:http://stackoverflow.com/questions/16683944/androidannotations-nothing-generated-empty-activity
