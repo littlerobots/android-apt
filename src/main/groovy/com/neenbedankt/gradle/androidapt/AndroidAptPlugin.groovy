@@ -1,14 +1,14 @@
 package com.neenbedankt.gradle.androidapt
 
-import org.gradle.api.Project
 import org.gradle.api.Plugin
+import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
 
 class AndroidAptPlugin implements Plugin<Project> {
     void apply(Project project) {
         //TODO does it make sense to apply this to a library project?
-        if(!project.plugins.findPlugin("android")) {
-            throw new ProjectConfigurationException("Android plugin must be applied to the project")
+        if (!project.plugins.findPlugin("android")) {
+            throw new ProjectConfigurationException("Android plugin must be applied to the project", null)
         }
         project.configurations.create('apt').extendsFrom(project.configurations.compile)
 
@@ -18,7 +18,7 @@ class AndroidAptPlugin implements Plugin<Project> {
                 def aptOutput = new File(aptOutputDir, variant.dirName)
                 def sourceSet = new File(variant.dirName).getName()
 
-                project.android.sourceSets[sourceSet].java.srcDirs+= aptOutput.getPath()
+                project.android.sourceSets[sourceSet].java.srcDirs += aptOutput.getPath()
 
                 variant.javaCompile.options.compilerArgs += [
                         '-processorpath', project.configurations.apt.getAsPath(),
