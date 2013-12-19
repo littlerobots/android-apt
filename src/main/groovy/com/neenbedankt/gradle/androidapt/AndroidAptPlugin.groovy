@@ -11,7 +11,7 @@ class AndroidAptPlugin implements Plugin<Project> {
             throw new ProjectConfigurationException("Android plugin must be applied to the project", null)
         }
         project.configurations.create('apt').extendsFrom(project.configurations.compile)
-
+        project.extensions.create("apt", AndroidAptExtension)
         project.afterEvaluate {
             project.android.applicationVariants.all { variant ->
                 def aptOutputDir = project.file(new File(project.buildDir, "source/apt"))
@@ -24,6 +24,13 @@ class AndroidAptPlugin implements Plugin<Project> {
                         '-processorpath', project.configurations.apt.getAsPath(),
                         '-s', aptOutput
                 ]
+
+                project.apt.aptArguments.variant = variant
+                project.apt.aptArguments.project = project
+                project.apt.aptArguments.android = project.android
+
+                variant.javaCompile.options.compilerArgs+=project.apt.arguments()
+
                 variant.javaCompile.source = variant.javaCompile.source.filter { p ->
                     return !p.getPath().startsWith(aptOutputDir.getPath())
                 }
