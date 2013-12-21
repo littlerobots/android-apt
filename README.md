@@ -17,8 +17,10 @@ buildscript {
       mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6+'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.0'
+        // replace with the current version of the Android plugin
+        classpath 'com.android.tools.build:gradle:0.7+'
+        // the latest version of the android-apt plugin
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.1'
     }
 }
 
