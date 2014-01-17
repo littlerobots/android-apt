@@ -7,13 +7,15 @@ dependencies {
     compile localGroovy()
 }
 
-version = "1.2-SNAPSHOT"
+version = "1.2"
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+ext {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+    artifactId = 'android-apt'
+}
 
 group = 'com.neenbedankt.gradle.plugins'
-artifactId = 'android-apt'
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'

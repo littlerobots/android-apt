@@ -2,10 +2,10 @@ What is this?
 ---------------
 The android-apt plugin assists in working with annotation processors in combination with Android Studio. It has two purposes:
 
-* Allow to configure a compile time only annotation processor as a dependency, not including the actifact in the final APK
+* Allow to configure a compile time only annotation processor as a dependency, not including the artifact in the final APK or library
 * Set up the source paths so that code that is generated from the annotation processor is correctly picked up by Android Studio.
 
-This plugin requires the android plugin to be configured on your project.
+This plugin requires the `android` or `android-library` plugin (version 0.7.x or up) to be configured on your project.
 
 Including and using the plugin in your build script
 ---------------------------------------------------
@@ -18,9 +18,9 @@ buildscript {
     }
     dependencies {
         // replace with the current version of the Android plugin
-        classpath 'com.android.tools.build:gradle:0.7+'
+        classpath 'com.android.tools.build:gradle:0.7.3'
         // the latest version of the android-apt plugin
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.1'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.2'
     }
 }
 
@@ -50,7 +50,7 @@ Configurating a compiler style dependency
 -----------------------------------------
 Annotation processors generally have a API and a processor that generates code that is used by the API. Depending on the project the processor and the API might be split up in separate dependencies. For example, [Dagger][1] uses two artifacts called _dagger-compiler_ and _dagger_. The compiler artifact is only used during compilation, while the main _dagger_ artifact is required at runtime.
 
-To aid in configurating this dependency, the plugin adds a Gradle [configuration][2] named **apt** that can be used like this:
+To aid in configuring this dependency, the plugin adds a Gradle [configuration][2] named **apt** that can be used like this:
 
 ```
 #!groovy
