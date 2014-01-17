@@ -7,7 +7,7 @@ dependencies {
     compile localGroovy()
 }
 
-version = "1.2"
+version = "1.3-SNAPSOT"
 
 ext {
     sourceCompatibility = 1.6
