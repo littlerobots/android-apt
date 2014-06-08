@@ -18,9 +18,9 @@ buildscript {
     }
     dependencies {
         // replace with the current version of the Android plugin
-        classpath 'com.android.tools.build:gradle:0.7.3'
+        classpath 'com.android.tools.build:gradle:0.11.0'
         // the latest version of the android-apt plugin
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.2'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.3'
     }
 }
 
@@ -59,6 +59,8 @@ dependencies {
  compile 'com.squareup.dagger:dagger:1.1.0'
 }
 ```
+
+Note that in most cases you should probably use the `provided` configuration that was introduced in version 0.8.0 of the android plugin.
 
 Configuration of other annotation processors
 --------------------------------------------
