@@ -18,7 +18,7 @@ class AndroidAptPlugin implements Plugin<Project> {
         project.extensions.create("apt", AndroidAptExtension)
         project.afterEvaluate {
             project.android[variants].all { variant ->
-                def aptOutputDir = project.file(new File(project.buildDir, "source/apt"))
+                def aptOutputDir = project.file(new File(project.buildDir, "generated/source/apt"))
                 def aptOutput = new File(aptOutputDir, variant.dirName)
 
                 variant.addJavaSourceFoldersToModel(aptOutput);
