@@ -9,9 +9,9 @@ import org.gradle.api.tasks.bundling.AbstractArchiveTask
 class AndroidAptPlugin implements Plugin<Project> {
     void apply(Project project) {
         def variants = null;
-        if (project.plugins.findPlugin("android")) {
+        if (project.plugins.findPlugin("com.android.application") || project.plugins.findPlugin("android")) {
             variants = "applicationVariants";
-        } else if (project.plugins.findPlugin("android-library")) {
+        } else if (project.plugins.findPlugin("com.android.library") || project.plugins.findPlugin("android-library")) {
             variants = "libraryVariants";
         } else {
             throw new ProjectConfigurationException("The android or android-library plugin must be applied to the project", null)
