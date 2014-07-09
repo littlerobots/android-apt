@@ -1,7 +1,7 @@
 package com.neenbedankt.gradle.androidapt
 
 class AptArguments {
-    private def arguments = []
+    def arguments = []
     def project
     def variant
     def android

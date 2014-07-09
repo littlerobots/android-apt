@@ -44,4 +44,40 @@ class AndroidAptPluginTest {
 //            dependencies = v.javaCompile.taskDependencies.getDependencies(v.javaCompile)
 //        }
     }
+
+    @Test
+    public void testProjectandroidTestAptDependency() {
+        Project root = ProjectBuilder.builder().build();
+        Project testProject = ProjectBuilder.builder().withName(":test").withParent(root).build();
+        testProject.apply plugin: 'java'
+        Project p = ProjectBuilder.builder().withParent(root).build()
+        p.apply plugin: 'android'
+        p.apply plugin: 'android-apt'
+        p.repositories {
+            mavenCentral()
+        }
+        p.dependencies {
+            androidTestApt testProject
+        }
+        p.android {
+            compileSdkVersion 19
+            buildToolsVersion "19.1"
+
+            defaultConfig {
+                minSdkVersion 14
+                targetSdkVersion 19
+                versionCode 1
+                versionName "1.0"
+            }
+        }
+        p.evaluate()
+        println "Variants"
+        println p.configurations
+        p.android.applicationVariants.all { v ->
+            if (v.testVariant) {
+                assert !v.testVariant.javaCompile.options.compilerArgs.empty
+            }
+        }
+        println "Variants"
+    }
 }
