@@ -18,14 +18,14 @@ buildscript {
     }
     dependencies {
         // replace with the current version of the Android plugin
-        classpath 'com.android.tools.build:gradle:0.11.0'
+        classpath 'com.android.tools.build:gradle:0.12.1'
         // the latest version of the android-apt plugin
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.3'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
     }
 }
 
-apply plugin: 'android'
-apply plugin: 'android-apt'
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 ```
 
 Passing processor arguments
@@ -61,6 +61,16 @@ dependencies {
 ```
 
 Note that in most cases you should probably use the `provided` configuration that was introduced in version 0.8.0 of the android plugin.
+
+If your test code requires generated code to be visible in Android Studio, you can use the `androidTestApt` configuration:
+
+```
+#!groovy
+dependencies {
+ androidTestApt 'com.github.frankiesardo:android-auto-value-processor:0.1'
+ androidTestCompile 'com.github.frankiesardo:android-auto-value:0.1'
+}
+```
 
 Configuration of other annotation processors
 --------------------------------------------
