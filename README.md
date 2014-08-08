@@ -5,7 +5,7 @@ The android-apt plugin assists in working with annotation processors in combinat
 * Allow to configure a compile time only annotation processor as a dependency, not including the artifact in the final APK or library
 * Set up the source paths so that code that is generated from the annotation processor is correctly picked up by Android Studio.
 
-This plugin requires the `android` or `android-library` plugin (version 0.7.x or up) to be configured on your project.
+This plugin requires the `android` or `android-library` plugin (version 0.9.x or up) to be configured on your project.
 
 Including and using the plugin in your build script
 ---------------------------------------------------
