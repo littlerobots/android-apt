@@ -31,7 +31,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 Passing processor arguments
 ---------------------------
 Some annotation processor may require to pass custom arguments, you can use `apt.arguments` for that purpose.
-For instance Android Annotation library needs the following configuration:
+For instance AndroidAnnotations needs the following configuration:
 
 ```
 #!groovy
