@@ -18,7 +18,7 @@ buildscript {
     }
     dependencies {
         // replace with the current version of the Android plugin
-        classpath 'com.android.tools.build:gradle:0.12.1'
+        classpath 'com.android.tools.build:gradle:0.14.4'
         // the latest version of the android-apt plugin
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
     }
@@ -38,7 +38,7 @@ For instance Android Annotation library needs the following configuration:
 apt {
     arguments {
             resourcePackageName android.defaultConfig.packageName
-            androidManifestFile variant.processResources.manifestFile
+            androidManifestFile variant.outputs[0].processResources.manifestFile
     }
 }
 ```
