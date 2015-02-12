@@ -11,12 +11,12 @@ import org.gradle.api.tasks.compile.JavaCompile
 class AndroidAptPlugin implements Plugin<Project> {
     void apply(Project project) {
         def variants = null;
-        if (project.plugins.findPlugin("com.android.application") || project.plugins.findPlugin("android") || project.plugins.findPlugin("dexguard")) {
+        if (project.plugins.findPlugin("com.android.application") || project.plugins.findPlugin("android")) {
             variants = "applicationVariants";
-        } else if (project.plugins.findPlugin("com.android.library") || project.plugins.findPlugin("android-library") || project.plugins.findPlugin("dexguard-library")) {
+        } else if (project.plugins.findPlugin("com.android.library") || project.plugins.findPlugin("android-library")) {
             variants = "libraryVariants";
         } else {
-            throw new ProjectConfigurationException("The android, dexguard, android-library or dexguard-library plugin must be applied to the project", null)
+            throw new ProjectConfigurationException("The android or android-library plugin must be applied to the project", null)
         }
         def aptConfiguration = project.configurations.create('apt').extendsFrom(project.configurations.compile)
         def aptTestConfiguration = project.configurations.create('androidTestApt').extendsFrom(project.configurations.androidTestCompile)
