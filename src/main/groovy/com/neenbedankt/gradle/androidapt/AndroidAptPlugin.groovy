@@ -34,6 +34,9 @@ class AndroidAptPlugin implements Plugin<Project> {
         }
         project.extensions.create("apt", AndroidAptExtension)
         project.afterEvaluate {
+            if (project.apt.disableDiscovery() && !project.apt.processors()) {
+                throw new ProjectConfigurationException('android-apt configuration error: disableDiscovery may only be enabled in the apt configuration when there\'s at least one processor configured', null);
+            }
             project.android[variants].all { variant ->
                 configureVariant(project, variant, aptConfiguration, project.apt)
                 configureUnitTestVariant(project, variant, aptTestConfiguration, project.apt);
@@ -44,7 +47,7 @@ class AndroidAptPlugin implements Plugin<Project> {
         }
     }
 
-    static void configureUnitTestVariant(def project, def variant, def aptConfiguration, def aptArguments) {
+    static void configureUnitTestVariant(def project, def variant, def aptConfiguration, def aptExtension) {
         def javaCompile = variant.javaCompile;
         // find JavaCompile tasks that depend on the variant task, excluding the variant.testVariant.javaCompile since that's
         // already explicitly configured. Then assume these JavaCompile tasks to be unit test-like tasks and configure those
@@ -53,7 +56,7 @@ class AndroidAptPlugin implements Plugin<Project> {
             project.tasks.withType(JavaCompile.class).each { JavaCompile compileTask ->
                 if (compileTask != variant?.testVariant?.javaCompile && compileTask.taskDependencies.getDependencies(compileTask).contains(javaCompile)) {
                     project.logger.info("Configure additional compile task: ${compileTask.name}");
-                    configureVariant(project, variant, aptConfiguration, aptArguments, compileTask);
+                    configureVariant(project, variant, aptConfiguration, aptExtension, compileTask);
                 }
             }
         }
@@ -61,7 +64,7 @@ class AndroidAptPlugin implements Plugin<Project> {
 
     static void configureVariant(
             def project,
-            def variant, def aptConfiguration, def aptArguments, def javaCompile = null) {
+            def variant, def aptConfiguration, def aptExtension, def javaCompile = null) {
         if (aptConfiguration.empty) {
             project.logger.info("No apt dependencies for configuration ${aptConfiguration.name}");
             return;
@@ -75,14 +78,27 @@ class AndroidAptPlugin implements Plugin<Project> {
         variant.addJavaSourceFoldersToModel(aptOutput);
         def processorPath = aptConfiguration.getAsPath();
 
+        def processors = aptExtension.processors()
+
         javaCompile.options.compilerArgs += [
-                '-processorpath', processorPath,
                 '-s', aptOutput
         ]
 
-        aptArguments.aptArguments.variant = variant
-        aptArguments.aptArguments.project = project
-        aptArguments.aptArguments.android = project.android
+        if (processors) {
+            javaCompile.options.compilerArgs += [
+                    '-processor', processors
+            ]
+        }
+
+        if (!(processors && aptExtension.disableDiscovery())) {
+            javaCompile.options.compilerArgs += [
+                    '-processorpath', processorPath
+            ]
+        }
+
+        aptExtension.aptArguments.variant = variant
+        aptExtension.aptArguments.project = project
+        aptExtension.aptArguments.android = project.android
 
         def projectDependencies = aptConfiguration.allDependencies.withType(ProjectDependency.class)
         // There must be a better way, but for now grab the tasks that produce some kind of archive and make sure those
@@ -92,7 +108,7 @@ class AndroidAptPlugin implements Plugin<Project> {
             archiveTasks.each { t -> variant.javaCompile.dependsOn t.path }
         }
 
-        javaCompile.options.compilerArgs += aptArguments.arguments()
+        javaCompile.options.compilerArgs += aptExtension.arguments()
 
         javaCompile.doFirst {
             aptOutput.mkdirs()

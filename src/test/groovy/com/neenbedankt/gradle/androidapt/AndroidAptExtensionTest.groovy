@@ -43,4 +43,12 @@ class AndroidAptExtensionTest {
         def extension = new AndroidAptExtension()
         assert extension.arguments() == []
     }
+
+    @Test
+    void testProcessors() {
+        def extension = new AndroidAptExtension()
+        extension.processor "TestClass"
+        extension.processor "TestClass2"
+        assert extension.processors() == 'TestClass,TestClass2'
+    }
 }
