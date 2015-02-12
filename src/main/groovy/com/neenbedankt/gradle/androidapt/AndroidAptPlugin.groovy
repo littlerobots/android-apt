@@ -20,7 +20,6 @@ class AndroidAptPlugin implements Plugin<Project> {
         }
         def aptConfiguration = project.configurations.create('apt').extendsFrom(project.configurations.compile)
         def aptTestConfiguration = project.configurations.create('androidTestApt').extendsFrom(project.configurations.androidTestCompile)
-        def aptUnitTestConfiguration;
 
         // depending on the plugins used, there might be a testCompile configuration. If it exists that configuration is used
         // for the testApt configuration, otherwise fallback on androidTestCompile
@@ -54,7 +53,7 @@ class AndroidAptPlugin implements Plugin<Project> {
             project.tasks.withType(JavaCompile.class).each { JavaCompile compileTask ->
                 if (compileTask != variant?.testVariant?.javaCompile && compileTask.taskDependencies.getDependencies(compileTask).contains(javaCompile)) {
                     project.logger.info("Configure additional compile task: ${compileTask.name}");
-                    configureVariant(project, variant, aptConfiguration, aptArguments, "", compileTask);
+                    configureVariant(project, variant, aptConfiguration, aptArguments, compileTask);
                 }
             }
         }
@@ -62,14 +61,14 @@ class AndroidAptPlugin implements Plugin<Project> {
 
     static void configureVariant(
             def project,
-            def variant, def aptConfiguration, def aptArguments, def dirNamePostFix = "", def javaCompile = null) {
+            def variant, def aptConfiguration, def aptArguments, def javaCompile = null) {
         if (aptConfiguration.empty) {
             project.logger.info("No apt dependencies for configuration ${aptConfiguration.name}");
             return;
         }
 
         def aptOutputDir = project.file(new File(project.buildDir, "generated/source/apt"))
-        def aptOutput = new File(aptOutputDir, variant.dirName + dirNamePostFix)
+        def aptOutput = new File(aptOutputDir, variant.dirName)
 
         javaCompile = javaCompile ? javaCompile : variant.javaCompile;
 
