@@ -60,8 +60,6 @@ dependencies {
 }
 ```
 
-Note that in most cases you should probably use the `provided` configuration that was introduced in version 0.8.0 of the android plugin.
-
 If your test code requires generated code to be visible in Android Studio, you can use the `androidTestApt` configuration:
 
 ```
