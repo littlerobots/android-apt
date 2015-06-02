@@ -43,7 +43,6 @@ apt {
 }
 ```
 
-Make sure to configure `packageName` in the `android` `defaultConfig` block for this purpose.
 The arguments are processed for each variant when the compiler is configured. From this closure you can reference `android`, `project` and `variant` for the current variant.
 
 Configurating a compiler style dependency
