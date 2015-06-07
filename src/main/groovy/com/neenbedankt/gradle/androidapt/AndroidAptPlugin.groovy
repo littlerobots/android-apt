@@ -6,7 +6,6 @@ import org.gradle.api.ProjectConfigurationException
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.artifacts.UnknownConfigurationException
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
-import org.gradle.api.tasks.compile.JavaCompile
 
 class AndroidAptPlugin implements Plugin<Project> {
     void apply(Project project) {
@@ -18,19 +17,18 @@ class AndroidAptPlugin implements Plugin<Project> {
         } else {
             throw new ProjectConfigurationException("The android or android-library plugin must be applied to the project", null)
         }
-        def aptConfiguration = project.configurations.create('apt').extendsFrom(project.configurations.compile)
-        def aptTestConfiguration = project.configurations.create('androidTestApt').extendsFrom(project.configurations.androidTestCompile)
-
+        def aptConfiguration = project.configurations.create('apt').extendsFrom(project.configurations.compile, project.configurations.provided)
+        def aptTestConfiguration = project.configurations.create('androidTestApt').extendsFrom(project.configurations.androidTestCompile, project.configurations.androidTestProvided)
+        def aptUnitTestConfiguration = null;
         // depending on the plugins used, there might be a testCompile configuration. If it exists that configuration is used
         // for the testApt configuration, otherwise fallback on androidTestCompile
         try {
             project.configurations.getByName('testCompile')
-            aptTestConfiguration = project.configurations.create('testApt').extendsFrom(project.configurations.testCompile)
+            aptUnitTestConfiguration = project.configurations.create('testApt').extendsFrom(project.configurations.testCompile, project.configurations.testProvided)
             project.logger.debug("Using testCompile to extend testApt from")
         }
         catch (UnknownConfigurationException ex) {
-            aptTestConfiguration = project.configurations.create('testApt').extendsFrom(project.configurations.androidTestCompile)
-            project.logger.debug("Using androidTestCompile to extend testApt from")
+            // skip
         }
         project.extensions.create("apt", AndroidAptExtension)
         project.afterEvaluate {
@@ -39,24 +37,15 @@ class AndroidAptPlugin implements Plugin<Project> {
             }
             project.android[variants].all { variant ->
                 configureVariant(project, variant, aptConfiguration, project.apt)
-                configureUnitTestVariant(project, variant, aptTestConfiguration, project.apt);
                 if (variant.testVariant) {
                     configureVariant(project, variant.testVariant, aptTestConfiguration, project.apt)
                 }
             }
-        }
-    }
 
-    static void configureUnitTestVariant(def project, def variant, def aptConfiguration, def aptExtension) {
-        def javaCompile = variant.javaCompile;
-        // find JavaCompile tasks that depend on the variant task, excluding the variant.testVariant.javaCompile since that's
-        // already explicitly configured. Then assume these JavaCompile tasks to be unit test-like tasks and configure those
-        // to run the processors specified by the testApt configuration
-        project.gradle.taskGraph.whenReady {
-            project.tasks.withType(JavaCompile.class).each { JavaCompile compileTask ->
-                if (compileTask != variant?.testVariant?.javaCompile && compileTask.taskDependencies.getDependencies(compileTask).contains(javaCompile)) {
-                    project.logger.info("Configure additional compile task: ${compileTask.name}");
-                    configureVariant(project, variant, aptConfiguration, aptExtension, compileTask);
+            if (aptUnitTestConfiguration) {
+                project.logger.debug('Configuring unit test variants');
+                project.android.unitTestVariants.all { variant ->
+                    configureVariant(project, variant, aptTestConfiguration, project.apt)
                 }
             }
         }
@@ -64,7 +53,7 @@ class AndroidAptPlugin implements Plugin<Project> {
 
     static void configureVariant(
             def project,
-            def variant, def aptConfiguration, def aptExtension, def javaCompile = null) {
+            def variant, def aptConfiguration, def aptExtension) {
         if (aptConfiguration.empty) {
             project.logger.info("No apt dependencies for configuration ${aptConfiguration.name}");
             return;
@@ -73,7 +62,7 @@ class AndroidAptPlugin implements Plugin<Project> {
         def aptOutputDir = project.file(new File(project.buildDir, "generated/source/apt"))
         def aptOutput = new File(aptOutputDir, variant.dirName)
 
-        javaCompile = javaCompile ? javaCompile : variant.javaCompile;
+        def javaCompile = variant.javaCompile;
 
         variant.addJavaSourceFoldersToModel(aptOutput);
         def processorPath = aptConfiguration.getAsPath();

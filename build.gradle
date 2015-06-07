@@ -9,15 +9,15 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    testCompile 'com.android.tools.build:gradle:1.0.+'
-    testCompile 'org.robolectric:robolectric-gradle-plugin:0.14.+'
+    testCompile 'com.android.tools.build:gradle:1.2.+'
 }
 
 version = "1.5-SNAPSHOT"
 
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
 ext {
-    sourceCompatibility = 1.6
-    targetCompatibility = 1.6
     artifactId = 'android-apt'
 }
 
