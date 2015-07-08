@@ -94,11 +94,13 @@ For annotation processors that include the API and processor in one artifact, th
 FAQ
 ---
 Q: When do I need this plugin?
+
 A: You _need_ this plugin when you include processors that generate sources that you need to import in your code. For example when using
 [Dagger 2][9] or [Android Annotations][10]. Using this plugin Android Studio will be configured to place the generated sources on the
 build path, preventing errors in the IDE. When using the `apt` scope, the annotation processor will not be included in your final APK.
 
 Q: What's the difference in using `provided` vs using `apt` for any annotation processor?
+
 A: `provided` will put the annotation processor classes and it's dependencies on the IDE class path. This means that you could
 accidentally reference these classes. For example, if the annotation processor uses Guava, you might mistakenly import that in
 your Android code. At runtime this would cause a crash. When using `apt` the processor is not added to your class path; it's only used
