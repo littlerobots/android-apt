@@ -4,7 +4,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
 import org.gradle.api.artifacts.ProjectDependency
-import org.gradle.api.artifacts.UnknownConfigurationException
 import org.gradle.api.tasks.bundling.AbstractArchiveTask
 
 class AndroidAptPlugin implements Plugin<Project> {
@@ -19,17 +18,6 @@ class AndroidAptPlugin implements Plugin<Project> {
         }
         def aptConfiguration = project.configurations.create('apt').extendsFrom(project.configurations.compile, project.configurations.provided)
         def aptTestConfiguration = project.configurations.create('androidTestApt').extendsFrom(project.configurations.androidTestCompile, project.configurations.androidTestProvided)
-        def aptUnitTestConfiguration = null;
-        // depending on the plugins used, there might be a testCompile configuration. If it exists that configuration is used
-        // for the testApt configuration, otherwise fallback on androidTestCompile
-        try {
-            project.configurations.getByName('testCompile')
-            aptUnitTestConfiguration = project.configurations.create('testApt').extendsFrom(project.configurations.testCompile, project.configurations.testProvided)
-            project.logger.debug("Using testCompile to extend testApt from")
-        }
-        catch (UnknownConfigurationException ex) {
-            // skip
-        }
         project.extensions.create("apt", AndroidAptExtension)
         project.afterEvaluate {
             if (project.apt.disableDiscovery() && !project.apt.processors()) {
@@ -39,13 +27,6 @@ class AndroidAptPlugin implements Plugin<Project> {
                 configureVariant(project, variant, aptConfiguration, project.apt)
                 if (variant.testVariant) {
                     configureVariant(project, variant.testVariant, aptTestConfiguration, project.apt)
-                }
-            }
-
-            if (aptUnitTestConfiguration) {
-                project.logger.debug('Configuring unit test variants');
-                project.android.unitTestVariants.all { variant ->
-                    configureVariant(project, variant, aptTestConfiguration, project.apt)
                 }
             }
         }
