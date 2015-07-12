@@ -44,7 +44,7 @@ class AndroidAptPlugin implements Plugin<Project> {
         def javaCompile = variant.hasProperty('javaCompiler') ? variant.javaCompiler : variant.javaCompile
 
         variant.addJavaSourceFoldersToModel(aptOutput);
-        def processorPath = aptConfiguration.getAsPath();
+        def processorPath = (aptConfiguration + javaCompile.classpath).asPath
 
         def processors = aptExtension.processors()
 
