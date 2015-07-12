@@ -41,7 +41,7 @@ class AndroidAptPlugin implements Plugin<Project> {
         def aptOutputDir = project.file(new File(project.buildDir, "generated/source/apt"))
         def aptOutput = new File(aptOutputDir, variant.dirName)
 
-        def javaCompile = variant.javaCompile;
+        def javaCompile = variant.hasProperty('javaCompiler') ? variant.javaCompiler : variant.javaCompile
 
         variant.addJavaSourceFoldersToModel(aptOutput);
         def processorPath = aptConfiguration.getAsPath();
