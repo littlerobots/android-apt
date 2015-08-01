@@ -3,11 +3,13 @@ package com.neenbedankt.gradle.androidapt
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
+import org.gradle.api.artifacts.UnknownConfigurationException
 
 class AndroidAptPlugin implements Plugin<Project> {
     void apply(Project project) {
         def variants = null;
-        if (project.plugins.findPlugin("com.android.application") || project.plugins.findPlugin("android")) {
+        if (project.plugins.findPlugin("com.android.application") || project.plugins.findPlugin("android") ||
+                project.plugins.findPlugin("com.android.test")) {
             variants = "applicationVariants";
         } else if (project.plugins.findPlugin("com.android.library") || project.plugins.findPlugin("android-library")) {
             variants = "libraryVariants";
@@ -15,9 +17,18 @@ class AndroidAptPlugin implements Plugin<Project> {
             throw new ProjectConfigurationException("The android or android-library plugin must be applied to the project", null)
         }
         def aptConfiguration = project.configurations.create('apt').extendsFrom(project.configurations.compile, project.configurations.provided)
-        def aptTestConfiguration = project.configurations.create('androidTestApt').extendsFrom(project.configurations.androidTestCompile, project.configurations.androidTestProvided)
+        def aptTestConfiguration = null;
+        try {
+            aptTestConfiguration = project.configurations.create('androidTestApt').extendsFrom(project.configurations.getByName('androidTestCompile'), project.configurations.getByName('androidTestProvided'))
+        } catch (UnknownConfigurationException ex) {
+            // this can be missing in the case of the com.android.test plugin
+        }
         def aptUnitTestConfiguration
-        aptUnitTestConfiguration = project.configurations.create('testApt').extendsFrom(project.configurations.testCompile, project.configurations.testProvided)
+        try {
+            aptUnitTestConfiguration = project.configurations.create('testApt').extendsFrom(project.configurations.getByName('testCompile'), project.configurations.getByName('testProvided'))
+        } catch (UnknownConfigurationException ex) {
+            // missing on older plugin version
+        }
         project.extensions.create("apt", AndroidAptExtension)
         project.afterEvaluate {
             if (project.apt.disableDiscovery() && !project.apt.processors()) {
@@ -25,10 +36,10 @@ class AndroidAptPlugin implements Plugin<Project> {
             }
             project.android[variants].all { variant ->
                 configureVariant(project, variant, aptConfiguration, project.apt)
-                if (variant.testVariant) {
+                if (variant.testVariant && aptTestConfiguration) {
                     configureVariant(project, variant.testVariant, aptTestConfiguration, project.apt)
                 }
-                if (variant.hasProperty("unitTestVariant")) {
+                if (variant.hasProperty("unitTestVariant") && aptUnitTestConfiguration) {
                     configureVariant(project, variant.unitTestVariant, aptUnitTestConfiguration, project.apt)
                 }
             }
