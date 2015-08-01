@@ -59,7 +59,7 @@ dependencies {
 }
 ```
 
-If your test code requires generated code to be visible in Android Studio, you can use the `androidTestApt` configuration:
+If your instrumentation test code requires generated code to be visible in Android Studio, you can use the `androidTestApt` configuration:
 
 ```
 #!groovy
@@ -68,6 +68,17 @@ dependencies {
  androidTestCompile 'com.github.frankiesardo:android-auto-value:0.1'
 }
 ```
+
+For unit tests use `testApt`
+
+```
+#!groovy
+dependencies {
+ testApt 'com.github.frankiesardo:android-auto-value-processor:0.1'
+ testCompile 'com.github.frankiesardo:android-auto-value:0.1'
+}
+```
+
 
 Additional configuration
 ------------------------

@@ -16,6 +16,8 @@ class AndroidAptPlugin implements Plugin<Project> {
         }
         def aptConfiguration = project.configurations.create('apt').extendsFrom(project.configurations.compile, project.configurations.provided)
         def aptTestConfiguration = project.configurations.create('androidTestApt').extendsFrom(project.configurations.androidTestCompile, project.configurations.androidTestProvided)
+        def aptUnitTestConfiguration
+        aptUnitTestConfiguration = project.configurations.create('testApt').extendsFrom(project.configurations.testCompile, project.configurations.testProvided)
         project.extensions.create("apt", AndroidAptExtension)
         project.afterEvaluate {
             if (project.apt.disableDiscovery() && !project.apt.processors()) {
@@ -25,6 +27,9 @@ class AndroidAptPlugin implements Plugin<Project> {
                 configureVariant(project, variant, aptConfiguration, project.apt)
                 if (variant.testVariant) {
                     configureVariant(project, variant.testVariant, aptTestConfiguration, project.apt)
+                }
+                if (variant.hasProperty("unitTestVariant")) {
+                    configureVariant(project, variant.unitTestVariant, aptUnitTestConfiguration, project.apt)
                 }
             }
         }

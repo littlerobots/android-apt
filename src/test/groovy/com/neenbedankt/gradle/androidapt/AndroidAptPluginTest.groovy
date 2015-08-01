@@ -22,6 +22,8 @@ class AndroidAptPluginTest {
         Project testProject = ProjectBuilder.builder().withName(":test").withParent(root).build();
         testProject.apply plugin: 'java'
         Project p = ProjectBuilder.builder().withParent(root).build()
+        // android plugin seems to need this dir to exist
+        p.file(".").mkdir();
         p.apply plugin: 'android'
         p.apply plugin: 'android-apt'
         p.dependencies {
@@ -51,8 +53,10 @@ class AndroidAptPluginTest {
         Project testProject = ProjectBuilder.builder().withName(":test").withParent(root).build();
         testProject.apply plugin: 'java'
         Project p = ProjectBuilder.builder().withParent(root).build()
-        p.apply plugin: 'android'
-        p.apply plugin: 'android-apt'
+        // android plugin seems to need this dir to exist
+        p.file(".").mkdir();
+        p.apply plugin: 'com.android.application'
+        p.apply plugin: 'com.neenbedankt.android-apt'
         p.repositories {
             mavenCentral()
         }
