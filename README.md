@@ -18,9 +18,9 @@ buildscript {
     }
     dependencies {
         // replace with the current version of the Android plugin
-        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'com.android.tools.build:gradle:1.3.0'
         // the latest version of the android-apt plugin
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.6'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.7'
     }
 }
 
