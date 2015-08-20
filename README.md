@@ -31,17 +31,19 @@ apply plugin: 'com.neenbedankt.android-apt'
 Passing processor arguments
 ---------------------------
 Some annotation processor may require to pass custom arguments, you can use `apt.arguments` for that purpose.
-For instance AndroidAnnotations needs the following configuration:
+For instance for AndroidAnnotations you can use the following configuration:
 
 ```
 #!groovy
 apt {
     arguments {
             resourcePackageName "com.myapp.package.name"
-            androidManifestFile variant.outputs[0].processResources.manifestFile
+            androidManifestFile variant.outputs[0]?.processResources?.manifestFile
     }
 }
 ```
+
+AndroidAnnotations needs to know where your `AndroidManifest.xml` is. Retrieving it through the `variant` allows for different `AndroidManfest.xml` files for each flavor. However, not all variants (e.g. unit tests) might have the properties required, hence the groovy `?.` operator to dereference these properties in a safe way. (Yes, this is a bit of a hack).
 
 The arguments are processed for each variant when the compiler is configured. From this closure you can reference `android`, `project` and `variant` for the current variant.
 
