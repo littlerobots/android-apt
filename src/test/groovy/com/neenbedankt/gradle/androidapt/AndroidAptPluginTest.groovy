@@ -1,10 +1,11 @@
 package com.neenbedankt.gradle.androidapt
 
 import org.gradle.api.Project
+import org.gradle.api.tasks.compile.GroovyCompile
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Test
 
-import static org.junit.Assert.fail
+import static org.junit.Assert.*
 
 class AndroidAptPluginTest {
 
@@ -85,5 +86,44 @@ class AndroidAptPluginTest {
             }
         }
         println "Variants"
+    }
+
+    @Test
+    public void testConfigureAndroidGroovy() {
+        Project p = ProjectBuilder.builder().build();
+        Project testProject = ProjectBuilder.builder().withName(":test").withParent(p).build();
+        testProject.apply plugin: 'java'
+        p.file(".").mkdir();
+        p.apply plugin: 'com.android.application'
+        p.apply plugin: 'groovyx.grooid.groovy-android'
+        p.apply plugin: 'com.neenbedankt.android-apt'
+        p.repositories {
+            jcenter()
+            mavenCentral()
+        }
+        p.android {
+            compileSdkVersion 19
+            buildToolsVersion "19.1"
+
+            defaultConfig {
+                minSdkVersion 14
+                targetSdkVersion 19
+                versionCode 1
+                versionName "1.0"
+            }
+        }
+        p.dependencies {
+            // needs a dependency here for apt to configure anything
+            compile testProject
+            testCompile testProject
+            androidTestCompile testProject
+        }
+        p.evaluate()
+        p.configurations
+        def groovyTasks = p.tasks.withType GroovyCompile.class
+        assertNotNull(groovyTasks)
+        for (def task : groovyTasks) {
+            assertTrue("No annotation processing for task ${task.name}", task.groovyOptions.javaAnnotationProcessing)
+        }
     }
 }

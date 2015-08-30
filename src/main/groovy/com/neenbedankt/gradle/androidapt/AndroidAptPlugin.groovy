@@ -4,6 +4,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
 import org.gradle.api.artifacts.UnknownConfigurationException
+import org.gradle.api.tasks.compile.GroovyCompile
 
 class AndroidAptPlugin implements Plugin<Project> {
     void apply(Project project) {
@@ -92,6 +93,18 @@ class AndroidAptPlugin implements Plugin<Project> {
 
         javaCompile.doFirst {
             aptOutput.mkdirs()
+        }
+
+        // Groovy compilation is added by the groovy-android-gradle-plugin in finalizedBy
+        def dependency = javaCompile.finalizedBy;
+        def dependencies = dependency.getDependencies(javaCompile);
+        for (def dep : dependencies) {
+            if (dep instanceof GroovyCompile) {
+                if (dep.groovyOptions.hasProperty("javaAnnotationProcessing")) {
+                    dep.options.compilerArgs += javaCompile.options.compilerArgs;
+                    dep.groovyOptions.javaAnnotationProcessing = true
+                }
+            }
         }
     }
 }
