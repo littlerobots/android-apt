@@ -51,7 +51,11 @@ Because this is just a Groovy closure things like setting configuration based on
 ```
 #!groovy
 
-def getManifestByVariant(variant) {    
+def getManifestByVariant(variant) {
+    // return the value based on the variant
+    if (variant.name == 'release') {
+        return '/my/path/to/the/manifest.xml'
+    }
     return variant.outputs[0]?.processResources?.manifestFile
 }
 
