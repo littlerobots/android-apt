@@ -46,6 +46,25 @@ apt {
 AndroidAnnotations needs to know where your `AndroidManifest.xml` is. Retrieving it through the `variant` allows for different `AndroidManfest.xml` files for each flavor. However, not all variants (e.g. unit tests) might have the properties required, hence the groovy `?.` operator to dereference these properties in a safe way. (Yes, this is a bit of a hack).
 
 The arguments are processed for each variant when the compiler is configured. From this closure you can reference `android`, `project` and `variant` for the current variant.
+Because this is just a Groovy closure things like setting configuration based on the `variant` name can also be done:
+ 
+```
+#!groovy
+
+def getManifestByVariant(variant) {    
+return variant.outputs[0]?.processResources?.manifestFile
+}
+
+apt {
+ arguments {
+         if (variant.name == 'debug') {
+            resourcePackageName "com.myapp.package.name.debug"
+            // more options
+         }             
+         androidManifestFile project.getManifestByVariant(variant)             
+ }
+}
+```
 
 Configurating a compiler style dependency
 -----------------------------------------
