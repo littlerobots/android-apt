@@ -52,17 +52,17 @@ Because this is just a Groovy closure things like setting configuration based on
 #!groovy
 
 def getManifestByVariant(variant) {    
-return variant.outputs[0]?.processResources?.manifestFile
+    return variant.outputs[0]?.processResources?.manifestFile
 }
 
 apt {
- arguments {
+     arguments {
          if (variant.name == 'debug') {
             resourcePackageName "com.myapp.package.name.debug"
             // more options
          }             
          androidManifestFile project.getManifestByVariant(variant)             
- }
+     }
 }
 ```
 
