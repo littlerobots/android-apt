@@ -62,7 +62,7 @@ uploadArchives {
                     authentication(userName: sonatypeUsername, password: sonatypePassword)
                 }
             }
-            uniqueVersion = false
+            uniqueVersion = true
 
             pom.project {
 
