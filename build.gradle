@@ -14,7 +14,7 @@ dependencies {
     testCompile 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.6'
 }
 
-version = "1.8"
+version = "1.9-SNAPSHOT"
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
