@@ -20,7 +20,7 @@ buildscript {
         // replace with the current version of the Android plugin
         classpath 'com.android.tools.build:gradle:1.3.0'
         // the latest version of the android-apt plugin
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.7'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
 
