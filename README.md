@@ -94,7 +94,7 @@ dependencies {
 }
 ```
 
-For unit tests use `testApt`
+For unit tests use `testApt` **Note: requires Android Studio 1.4!**
 
 ```
 #!groovy
