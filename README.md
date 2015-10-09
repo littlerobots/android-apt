@@ -37,7 +37,7 @@ For instance for AndroidAnnotations you can use the following configuration:
 #!groovy
 apt {
     arguments {
-            resourcePackageName "com.myapp.package.name"
+            resourcePackageName android.defaultConfig.applicationId
             androidManifestFile variant.outputs[0]?.processResources?.manifestFile
     }
 }
