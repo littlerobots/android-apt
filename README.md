@@ -1,3 +1,5 @@
+**Note: the latest Android Gradle plugin has now built in support for annotation processors, see [this wiki page](https://bitbucket.org/hvisser/android-apt/wiki/Migration) for more info.** 
+
 What is this?
 ---------------
 The android-apt plugin assists in working with annotation processors in combination with Android Studio. It has two purposes:
