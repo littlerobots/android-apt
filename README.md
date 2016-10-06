@@ -1,4 +1,4 @@
-**Note: the latest Android Gradle plugin has now built in support for annotation processors, see [this wiki page](https://bitbucket.org/hvisser/android-apt/wiki/Migration) for more info.** 
+**Note: the latest Android Gradle plugin has now built in support for annotation processors, see [this wiki page](https://bitbucket.org/hvisser/android-apt/wiki/Migration) and [this blogpost](http://www.littlerobots.nl/blog/Whats-next-for-android-apt/) for more info.** 
 
 What is this?
 ---------------
